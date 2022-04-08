@@ -5,6 +5,31 @@ from utils.datasets import letterbox
 from utils.general import non_max_suppression, scale_coords
 from utils.plots import Annotator
 
+import boto3
+
+# AWS account
+ACCESS_KEY = {IAM Access Key 입력}
+SECRET_KEY = {IAM Secret Access Key 입력}
+BUCKET_NAME = {S3 Bucket 이름 입력}
+URI = {S3 uri 입력}
+
+resource = boto3.resource(
+    's3',
+    aws_access_key_id=ACCESS_KEY,
+    aws_secret_access_key=SECRET_KEY
+)
+
+bucket = resource.Bucket(BUCKET_NAME)
+
+s3 = boto3.resource(
+    's3',
+    aws_access_key_id=ACCESS_KEY,
+    aws_secret_access_key=SECRET_KEY
+)
+
+bucket = s3.Bucket(BUCKET_NAME)
+
+# Model Setting
 MODEL_PATH = 'weights/e50b32.pt'
 
 img_size = 416
@@ -51,9 +76,6 @@ for p in pred:
         annotator.box_label([x1, y1, x2, y2], '%s %d' % (class_name, float(p[4]) * 100), color=colors[int(p[5])])
 
 result_img = annotator.result()
-
-#cv2.imshow('result', result_img)
-
 cv2.imwrite('result.png', result_img)
 # results = model(img)
 # results.show()
